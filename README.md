@@ -1,2 +1,2 @@
-# forex_forecast_models_python
+# Forex Forecast Models (Python Edition)
 Comparative Analysis of Foreign Exchange Forecast Models
