@@ -28,7 +28,7 @@ class ProphetSimulator(Simulator):
 
         _forecast = model.predict(future)
         last_n = _forecast.tail(forecast_horizon)
-        last_n.to_csv(f"output/{self.currency_pair}__{self.model_name.lower()}__forecasts.csv")
+        last_n.to_csv(f"output/{self.currency_pair}__{self.model_name.lower()}__{forecast_horizon}__forecasts.csv")
 
         # last_n = _forecast[["ds", "yhat", "yhat_lower", "yhat_upper"]].tail(n)
         print(last_n)

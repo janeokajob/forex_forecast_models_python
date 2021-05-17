@@ -53,5 +53,5 @@ class ArimaSimulator(Simulator):
         self.forecasts_upper = collated_results["forecast_upper"]
         self.forecasts_raw = collated_results
 
-        collated_results.to_csv(f"output/{self.currency_pair}__{self.model_name.lower()}__forecasts.csv")
+        collated_results.to_csv(f"output/{self.currency_pair}__{self.model_name.lower()}__{forecast_horizon}__forecasts.csv")
         print(collated_results)

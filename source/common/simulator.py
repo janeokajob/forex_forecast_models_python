@@ -22,14 +22,21 @@ class Simulator:
         self.metrics = None
         self.forecasts_raw = []
         self.decomposition = None
+        self.forecast_horizon = 0
 
     def forecast(self, forecast_horizon: int = 100):
         training_data_size = self.trading_data.size - forecast_horizon
         self.training_data = self.trading_data.head(training_data_size)
         self.validation_data = self.trading_data.tail(forecast_horizon)
+        self.forecast_horizon = forecast_horizon
 
-        time_series = self.training_data[["close"]]
-        raw_decomposition = seasonal_decompose(time_series, model='additive', period=1)
+        # decompose time-series for trend and seasonality
+        time_series = pd.DataFrame(self.training_data, columns=["date", "close"])
+        time_series['date'] = pd.to_datetime(time_series['date'])
+        time_series.sort_values('date', inplace=True)
+        time_series.set_index('date', inplace=True)
+
+        raw_decomposition = seasonal_decompose(time_series)
         decomposition = DataFrame.from_records(
             [{"trend": trend, "residual": residual, "seasonality": seasonality} for trend, residual, seasonality in
              zip(raw_decomposition.trend, raw_decomposition.resid, raw_decomposition.seasonal)])
@@ -82,19 +89,6 @@ class Simulator:
             "Coefficient of Determination": coeff_determination
         }
         self.metrics = metrics
-
-    def plot_decomposition(self):
-        trend = self.decomposition.trend
-        seasonal = self.decomposition.seasonal
-        residual = self.decomposition.resid
-
-    def plot_trading_data(self):
-        x = self.training_data["date"]
-        y = self.training_data["close"]
-
-        plt.figure(figsize=(20, 10))
-        plt.subplot(221)
-        plt.plot(self.training_data)
 
     def plot_source_dataset(self):
         sub_set = self.validation_data
